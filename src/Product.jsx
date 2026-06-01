@@ -1,88 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 const Product = () => {
   const [data, setData] = useState([]);
-  const [formData, setFormData] = useState({
+  const [formdata, setFormdata] = useState({
     name: "",
     price: 0,
-    stok: 0,
+    stock: 0,
   });
 
-  const addProduct = (e) => {
+  const inputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    console.log(formData);
+    setFormdata({ ...formdata, [name]: value });
+    console.log(formdata);
   };
 
-  function addProductBtn() {
-    setData([...data, formData]);
+  function getProduct() {
+    fetch("https://coldenergy.ge/api/products")
+      .then((res) => res.json())
+      .then((data) => setData(data));
   }
+
+  function addProduct() {
+    fetch("https://coldenergy.ge/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formdata),
+    }).then((res) => getProduct());
+  }
+
+  useEffect(() => {
+    getProduct();
+  }, []);
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          width: "800px",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="inputBox">
         <input
           type="text"
           placeholder="name"
           name="name"
-          onChange={addProduct}
+          onChange={inputChange}
         />
         <input
           type="text"
-          placeholder="price"
+          placeholder="name"
           name="price"
-          onChange={addProduct}
+          onChange={inputChange}
         />
         <input
           type="text"
-          placeholder="stok"
+          placeholder="name"
           name="stock"
-          onChange={addProduct}
+          onChange={inputChange}
         />
+        <button onClick={addProduct}>ADD</button>
       </div>
-      <button onClick={addProductBtn}>Add Product</button>
-      <div
-        style={{
-          display: "flex",
-          width: "800px",
-          justifyContent: "space-between",
-        }}
-      >
-        <ul
-          style={{
-            display: "flex",
-            width: "800px",
-            justifyContent: "space-between",
-            backgroundColor: "gray",
-          }}
-        >
-          <li>name</li>
-          <li>price</li>
-          <li>stok</li>
+      <ul className="table-header">
+        <li>Name</li>
+        <li>Price</li>
+        <li>Stock</li>
+        <li>Action</li>
+      </ul>
+
+      {data.map((item, index) => (
+        <ul key={index} className="table-row">
+          <li>{item.name}</li>
+          <li>{item.price} ₾</li>
+          <li>{item.stock}</li>
+          <li>
+            <button className="delete-btn">Delete</button>
+          </li>
         </ul>
-        {data.map((item, index) => (
-          <ul
-            key={index}
-            style={{
-              display: "flex",
-              width: "800px",
-              justifyContent: "space-between",
-              backgroundColor: "gray",
-            }}
-          >
-            <li>{item.name}</li>
-            <li>{item.price}</li>
-            <li>{item.stok}</li>
-          </ul>
-        ))}
-      </div>
+      ))}
     </>
   );
 };
