@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    list-style: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    margin-top: 20px;
+}
+
+button {
+    margin-block: 20px;
+}
+
+.inputBox {
+    display: flex;
+    justify-content: space-between;
+    width: 800px;
+}
+
